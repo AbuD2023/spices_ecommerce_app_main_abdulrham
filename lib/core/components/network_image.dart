@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/app_defaults.dart';
-import 'skeleton.dart';
 
 class NetworkImageWithLoader extends StatelessWidget {
   final BoxFit fit;
@@ -35,6 +34,8 @@ class NetworkImageWithLoader extends StatelessWidget {
             ),
           ),
         ),
+        errorWidget: (context, url, error) =>
+            const Icon(Icons.image_not_supported_outlined),
         // placeholder: (context, url) => const Skeleton(),
         // errorWidget: (context, url, error) => const Icon(Icons.error),
       ),

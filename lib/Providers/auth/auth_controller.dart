@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -53,13 +52,13 @@ class AuthProvider extends ChangeNotifier {
               'password': passwordController.text,
             }),
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         if (data['success'] == true) {
           _loginDriverData = LoginDriver.fromJson(data).data!;
-          log(_loginDriverData.token.toString(), name: 'token');
+          // log(_loginDriverData.token.toString(), name: 'token');
           notifyListeners();
           await authService.saveToken(data['data']['token']);
           await authService.saveUserData(data['data']);

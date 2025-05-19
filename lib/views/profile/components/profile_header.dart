@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'package:spices_ecommerce_app_main_abdulrham/Providers/profile_provider.dart';
 import 'package:spices_ecommerce_app_main_abdulrham/core/components/network_image.dart';
 

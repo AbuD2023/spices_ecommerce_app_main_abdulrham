@@ -1,5 +1,5 @@
 class AppLink {
-  static const String server = "https://spices.seha-sa.in/api";
+  static const String server = "https://spices.xcode.cam/api";
 
 // ================================= Auth ========================== //
 

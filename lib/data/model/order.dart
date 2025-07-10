@@ -1,9 +1,9 @@
 class Order {
   int? id;
-  double? subtotal;
+  dynamic subtotal;
   int? discountAmount;
   int? deliveryAmount;
-  double? totalAmount;
+  dynamic totalAmount;
   String? status;
   String? shippingAddress;
   String? paymentMethod;
@@ -25,8 +25,8 @@ class Order {
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     subtotal = json['subtotal'];
-    discountAmount = json['discount_amount'];
-    deliveryAmount = json['delivery_amount'];
+    discountAmount = json['discount_amount'] as int;
+    deliveryAmount = json['delivery_amount'] as int;
     totalAmount = json['total_amount'];
     status = json['status'];
     shippingAddress = json['shipping_address'];

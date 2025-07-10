@@ -20,7 +20,15 @@ class OrderHistoryPage extends StatelessWidget {
       appBar: buildAppBar(context, 'سجل الطلبات',
           showBackButton: true,
           showSearchButton: false,
-          backgroundColor: const Color.fromARGB(255, 2, 191, 128)),
+          backgroundColor: const Color.fromARGB(255, 2, 191, 128),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  await Provider.of<OrderProvider>(context, listen: false)
+                      .fetchHistoryOrders();
+                },
+                icon: Icon(Icons.refresh))
+          ]),
       backgroundColor: Colors.grey[100],
       body: Consumer<OrderProvider>(
         builder: (context, orderProvider, state) {

@@ -22,7 +22,15 @@ class OrderCurrentPage extends StatelessWidget {
       appBar: buildAppBar(context, 'الطلبات',
           showBackButton: true,
           showSearchButton: false,
-          backgroundColor: const Color.fromARGB(255, 2, 191, 128)),
+          backgroundColor: const Color.fromARGB(255, 2, 191, 128),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Provider.of<OrderProvider>(context, listen: false)
+                      .fetchCurrentOrders();
+                },
+                icon: const Icon(Icons.refresh))
+          ]),
       backgroundColor: Colors.grey[100],
       body: Consumer<OrderProvider>(
         builder: (context, orderProvider, _) {
@@ -63,12 +71,38 @@ class OrderCurrentPage extends StatelessWidget {
                           child: CircularProgressIndicator(color: Colors.teal));
                     } else if (orderProvider.errorMessage.isNotEmpty) {
                       return Center(
-                          child: Text(orderProvider.errorMessage,
-                              style: const TextStyle(color: Colors.red)));
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(orderProvider.errorMessage,
+                              style: const TextStyle(color: Colors.red)),
+                          const SizedBox(
+                            height: 50.0,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                odrProv.fetchCurrentOrders();
+                              },
+                              child: const Text('تحديث'))
+                        ],
+                      ));
                     } else if (orderProvider.currentOrderData.order == null) {
-                      return const Center(
-                          child: Text('لا يوجد طلبات حاليه',
-                              style: TextStyle(fontSize: 18)));
+                      return Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('لا يوجد طلبات حاليه',
+                              style: TextStyle(fontSize: 18)),
+                          const SizedBox(
+                            height: 50.0,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                odrProv.fetchCurrentOrders();
+                              },
+                              child: const Text('تحديث'))
+                        ],
+                      ));
                     } else {
                       return ListView.builder(
                         itemCount: 1,
@@ -211,6 +245,8 @@ class OrderCurrentPage extends StatelessWidget {
         return Colors.green;
       case 'cancelled':
         return Colors.red;
+      case 'shipped':
+        return Colors.blue;
       default:
         return Colors.grey;
     }
@@ -224,6 +260,8 @@ class OrderCurrentPage extends StatelessWidget {
         return 'مكتمل';
       case 'cancelled':
         return 'ملغي';
+      case 'shipped':
+        return 'قيد إنتظار الموافقة';
       default:
         return 'غير معروف';
     }
@@ -262,18 +300,18 @@ class OrderCurrentPage extends StatelessWidget {
               color: Colors.grey.withOpacity(0.3),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3)),
+              offset: const Offset(0, 3)),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('تفاصيل الطلب',
+          const Text('تفاصيل الطلب',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
                   color: Colors.teal)),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           _buildDetailRow('معرف الطلب', order.id.toString()),
           _buildDetailRow('المبلغ الفرعي', order.subtotal.toString()),
           _buildDetailRow('مبلغ الخصم', order.discountAmount.toString()),
@@ -281,12 +319,12 @@ class OrderCurrentPage extends StatelessWidget {
           _buildDetailRow('المبلغ الإجمالي', order.totalAmount.toString()),
           _buildDetailRow('عنوان الشحن', order.shippingAddress ?? 'غير محدد'),
           _buildDetailRow('طريقة الدفع', order.paymentMethod ?? 'غير محدد'),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           if (order.status?.toLowerCase() == 'shipped') // شرط هنا
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
@@ -294,8 +332,8 @@ class OrderCurrentPage extends StatelessWidget {
                       style: TextStyle(color: Colors.black),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Icon(Icons.cancel, color: Colors.green),
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.cancel, color: Colors.green),
                     ),
                   ],
                 ),
@@ -307,13 +345,13 @@ class OrderCurrentPage extends StatelessWidget {
           if (order.status?.toLowerCase() == 'on_way') // شرط هنا
             Center(
               child: ElevatedButton(
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('تم التوصيل'),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Icon(Icons.cancel, color: Colors.yellow),
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.cancel, color: Colors.yellow),
                     ),
                   ],
                 ),
@@ -393,9 +431,17 @@ class OrderCurrentPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
-          Text(value),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Flexible(
+            child: Text(
+              value,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 6,
+              textAlign: TextAlign.end,
+            ),
+          ),
         ],
       ),
     );

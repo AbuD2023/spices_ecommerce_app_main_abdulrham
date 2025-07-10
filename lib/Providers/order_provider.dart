@@ -141,9 +141,16 @@ class OrderProvider extends ChangeNotifier {
     try {
       _isLoading = true;
       _orderUpdateStatuserrorMessage = '';
-      final token = await _authService.getToken();
       notifyListeners();
-      if (token == null) throw Exception('No token found');
+      final token = await _authService.getToken();
+      if (token == null) {
+        _orderUpdateStatuserrorMessage =
+            'الرجاء تسجيل الدخول لعرض الطلبات السابقة.';
+        notifyListeners();
+        throw Exception('No token found');
+        // return;
+      }
+      // if (token == null) throw Exception('No token found');
 
       final response = await http.put(
         // Change to http.put

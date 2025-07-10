@@ -17,6 +17,7 @@ AppBar buildAppBar(
         color: Colors.white,
       ),
     ),
+    
     centerTitle: true,
     elevation: 5,
     shadowColor: Colors.black.withOpacity(0.3),
